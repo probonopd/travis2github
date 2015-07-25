@@ -66,7 +66,7 @@ for arg in sys.argv[1:]:
     headers = {'Authorization': 'token ' + token,
                'Content-Type': content_type}
     data = open(filename, 'rb').read()
-    response = requests.post(url, data=data, headers=headers, verify=False)
+    response = requests.post(url, data=data, headers=headers)
     print response
     data = json.loads(response.content)
     print data["browser_download_url"]
