@@ -1,7 +1,6 @@
-import urllib, json, requests
-import os, sys
-import magic # sudo pip install python-magic
-import re
+import urllib, json, os, sys, re
+import requests # apt-get install python-requests
+import magic # apt-get install python-magic seems to install a wrong version
 
 __author__ = 'probonopd'
 release_name = "travis"
@@ -9,7 +8,6 @@ release_name = "travis"
 git_config = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".git/config")
 print git_config
 config = open(git_config).read()
-print(config)
 gits = re.findall("https.*.git", config)[0].split("/")
 username = gits[3]
 repo = gits[4].replace(".git", "")
