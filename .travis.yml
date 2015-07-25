@@ -1,0 +1,13 @@
+sudo: true
+notifications:
+email: false
+language: python
+env:
+global:
+install:
+- sudo apt-get update -qq
+- sudo apt-get install python-requests -qq
+- git clone https://github.com/probonopd/travis2github.git
+script:
+- cd ./travis2github
+- python travis2github.py ./travis2github.py
