@@ -13,7 +13,7 @@ username = gits[3]
 repo = gits[4].replace(".git", "")
 
 if os.environ.get('GITHUB_TOKEN')== None:
-    print("GitHub token needs to be set in Travis CI Repository Settings")
+    print("GITHUB_TOKEN needs to be set in Travis CI Repository Settings")
     exit(1)
 else:
     token = os.environ.get('GITHUB_TOKEN')
@@ -32,6 +32,7 @@ print url
 # Get the release with the release_name
 headers = {'Authorization': 'token ' + token}
 response = requests.get(url, headers=headers)
+print response
 data = json.loads(response.content)
 
 release = None
