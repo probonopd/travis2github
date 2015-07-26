@@ -13,8 +13,9 @@ username = gits[3]
 repo = gits[4].replace(".git", "")
 
 if os.environ.get('GITHUB_TOKEN')== None:
-    print("GitHub token needs to be set in Travis CI Repository Settings")
-    exit(1)
+    print("GITHUB_TOKEN needs to be set in Travis CI Repository Settings")
+    print("Skipping upload to GitHub Releases")
+    exit(0)
 else:
     token = os.environ.get('GITHUB_TOKEN')
 
@@ -32,6 +33,8 @@ print url
 # Get the release with the release_name
 headers = {'Authorization': 'token ' + token}
 response = requests.get(url, headers=headers)
+print response
+assert(response.status_code==200)
 data = json.loads(response.content)
 
 release = None
@@ -39,21 +42,44 @@ for candidate in data:
     if candidate['tag_name'] == release_name:
         release = candidate
 
-if (release == None):
-    print("No release with name " + release_name + " found, exiting")
-    exit(1)
+if (release != None):
+    print("Release with name " + release_name + " found, deleting...")
+    # TODO: Check if deleting and creating a release is necessary because the git sha has changed since
+    # Delete this release
+    print release["url"]
+    headers = {'Authorization': 'token ' + token}
+    response = requests.delete(release["url"], headers=headers)
+    assert(response.status_code==204)
+    print response
 
-# Delete all binary assets of that release with the corresponding filename
-for asset in release["assets"]:
-    for arg in sys.argv[1:]:
-        filename = arg
-        if(asset["name"] == os.path.basename(filename)):
-            print("Deleting asset " + str(asset["id"]) + " ...")
-            headers = {'Authorization': 'token ' + token}
-            url = asset["url"]
-            response = requests.delete(url, headers=headers)
-            print response
+# Create new release with the same name
+print("Creating new release with name " + release_name + "...")
+url = "https://api.github.com/repos/" + username + "/" + repo + "/releases"
+headers = {'Authorization': 'token ' + token}
+payload = {
+  "tag_name": release_name,
+  "target_commitish": "master",
+  "name": release_name,
+  "body": "Binary assets built with Travis CI",
+  "draft": False,
+  "prerelease": True
+}
+print url
+response = requests.post(url, data=json.dumps(payload), headers=headers)
+print response
+assert(response.status_code==201)
+release = json.loads(response.content)
 
+# # Delete all binary assets of that release with the corresponding filename
+# for asset in release["assets"]:
+#     for arg in sys.argv[1:]:
+#         filename = arg
+#         if(asset["name"] == os.path.basename(filename)):
+#             print("Deleting asset " + str(asset["id"]) + " ...")
+#             headers = {'Authorization': 'token ' + token}
+#             url = asset["url"]
+#             response = requests.delete(url, headers=headers)
+#             print response
 
 for arg in sys.argv[1:]:
     filename = arg
