@@ -67,6 +67,7 @@ payload = {
 print url
 response = requests.post(url, data=json.dumps(payload), headers=headers)
 print response
+print response.content
 # assert(response.status_code==201)
 release = json.loads(response.content)
 
