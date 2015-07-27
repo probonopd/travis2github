@@ -9,9 +9,10 @@ git_config = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".git/conf
 print git_config
 config = open(git_config).read()
 gits = None
-gits = re.findall("https.*.git", config)[0].split("/")
-if(gits == None):
-    gits = re.findall("git://.*.git", config)[0].split("/")
+try:
+    gits = re.findall("https:.*.git", config)[0].split("/")
+except:
+    gits = re.findall("git:.*.git", config)[0].split("/")
 username = gits[3]
 repo = gits[4].replace(".git", "")
 
