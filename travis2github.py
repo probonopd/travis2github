@@ -67,7 +67,7 @@ payload = {
 print url
 response = requests.post(url, data=json.dumps(payload), headers=headers)
 print response
-assert(response.status_code==201)
+# assert(response.status_code==201)
 release = json.loads(response.content)
 
 # # Delete all binary assets of that release with the corresponding filename
