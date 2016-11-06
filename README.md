@@ -2,6 +2,8 @@
 
 Upload travis builds to GitHub Releases.
 
+__NOTE__: This is deprecated, use https://github.com/probonopd/uploadtool instead.
+
 ## 1. Add "travis" release to your project
 
 You need to do this manually. Note that this release will be deleted and re-created every time travis-ci builds and uploads your software, hence providing a mechanism for having always the latest build available.
